@@ -17,7 +17,7 @@ struct Args {
     command: Option<Commands>,
 }
 
-#[derive(clap::ValueEnum, Clone, Default, Debug, Serialize)]
+#[derive(ValueEnum, Clone, Default, Debug, Serialize)]
 #[serde(rename_all = "lowercase")]
 enum ColourType {
     Dark,
@@ -54,6 +54,11 @@ enum Commands {
         #[arg(long)]
         tone: ColourType,
     },
+    /// Read out arguments
+    ReadArgs {
+        #[arg(long, value_delimiter = ',', num_args = 1..)]
+        names: Option<Vec<String>>,
+    },
 }
 
 fn main() {
@@ -85,6 +90,14 @@ fn main() {
                 ColourType::Gray => println!("tone: Gray"),
                 ColourType::Bright => println!("tone: Bright"),
                 ColourType::Beige => println!("tone: Beige"),
+            }
+        },
+        Some(Commands::ReadArgs { names }) => {
+            if names.is_none() || names.as_ref().unwrap().is_empty() {
+                println!("No arguments supplied");
+            } else {
+                println!("names length: {}", names.as_ref().unwrap().len());
+                println!("names supplied: {}", names.as_ref().unwrap().join(", "));
             }
         }
         None => {
