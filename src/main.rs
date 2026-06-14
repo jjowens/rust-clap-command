@@ -1,5 +1,6 @@
 use std::path::PathBuf;
-use clap::{Parser, Subcommand};
+use clap::{Parser, Subcommand, ValueEnum};
+use serde::Serialize;
 
 #[derive(Parser)]
 #[command(name = "myapp", author, version, about, long_about = None)]
@@ -14,6 +15,17 @@ struct Args {
 
     #[command(subcommand)]
     command: Option<Commands>,
+}
+
+#[derive(clap::ValueEnum, Clone, Default, Debug, Serialize)]
+#[serde(rename_all = "lowercase")]
+enum ColourType {
+    Dark,
+    #[default]
+    Light,
+    Gray,
+    Bright,
+    Beige
 }
 
 #[derive(Subcommand)]
@@ -36,6 +48,11 @@ enum Commands {
         /// Number of columns to split image into
         #[arg(short, long, default_value_t = 0)]
         columns: u32
+    },
+    /// Pick a colour tone
+    PickColourTone {
+        #[arg(long)]
+        tone: ColourType,
     },
 }
 
@@ -60,6 +77,15 @@ fn main() {
             println!("filepath: {}", filepath);
             println!("rows: {}", rows);
             println!("columns: {}", columns);
+        }
+        Some(Commands::PickColourTone { tone     }) => {
+            match tone {
+                ColourType::Dark => println!("tone: Dark"),
+                ColourType::Light => println!("tone: Light"),
+                ColourType::Gray => println!("tone: Gray"),
+                ColourType::Bright => println!("tone: Bright"),
+                ColourType::Beige => println!("tone: Beige"),
+            }
         }
         None => {
             println!("There was no subcommand given");
