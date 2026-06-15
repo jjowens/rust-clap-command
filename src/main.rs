@@ -1,3 +1,5 @@
+mod animals;
+
 use std::path::PathBuf;
 use clap::{Parser, Subcommand, ValueEnum};
 use serde::Serialize;
@@ -59,6 +61,8 @@ enum Commands {
         #[arg(long, value_delimiter = ',', num_args = 1..)]
         names: Option<Vec<String>>,
     },
+    /// Trait Test
+    TraitTest
 }
 
 fn main() {
@@ -99,7 +103,10 @@ fn main() {
                 println!("names length: {}", names.as_ref().unwrap().len());
                 println!("names supplied: {}", names.as_ref().unwrap().join(", "));
             }
-        }
+        },
+        Some(Commands::TraitTest { }) => {
+            animals::animalservice::process();
+        },
         None => {
             println!("There was no subcommand given");
         }
